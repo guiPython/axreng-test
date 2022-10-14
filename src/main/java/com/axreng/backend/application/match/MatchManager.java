@@ -3,11 +3,11 @@ package com.axreng.backend.application.match;
 import com.axreng.backend.domain.query.IQuery;
 import com.axreng.backend.domain.search.entity.ISearch;
 
-public class MatchHandler {
+public class MatchManager {
     private final ISearch search;
-    private final IPatternMatch[] handlers;
+    private final IPatternMatchHandler[] handlers;
     
-    public MatchHandler(ISearch search, IPatternMatch... patterns){
+    public MatchManager(ISearch search, IPatternMatchHandler... patterns){
         this.search = search;
         this.handlers = patterns;
     }

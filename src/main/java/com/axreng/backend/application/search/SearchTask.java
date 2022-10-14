@@ -5,16 +5,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
-import com.axreng.backend.application.match.MatchHandler;
+import com.axreng.backend.application.match.MatchManager;
 import com.axreng.backend.domain.query.IQuery;
 
 public class SearchTask implements Runnable {
     private final IQuery query;
-    private final MatchHandler matchHandler;
+    private final MatchManager matchManager;
 
-    public SearchTask(IQuery query, MatchHandler matchHandler) {
+    public SearchTask(IQuery query, MatchManager matchManager) {
         this.query = query;
-        this.matchHandler = matchHandler;
+        this.matchManager = matchManager;
     }
 
     @Override
@@ -22,7 +22,7 @@ public class SearchTask implements Runnable {
         try (var buffer = new BufferedReader(
                 new InputStreamReader(query.url().getValue().openConnection().getInputStream()));) {
             String content = buffer.lines().collect(Collectors.joining("\n"));
-            matchHandler.handle(content, query);
+            matchManager.handle(content, query);
             buffer.close();
         } catch (IOException e) {
             System.out.println("Cannot read html of url " + query.url().toString());

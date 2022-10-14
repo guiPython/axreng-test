@@ -1,8 +1,8 @@
 package com.axreng.backend;
 
-import com.axreng.backend.application.match.HrefHtmlPatternMatch;
-import com.axreng.backend.application.match.KeywordPatternMatch;
-import com.axreng.backend.application.match.MatchHandler;
+import com.axreng.backend.application.match.HrefHtmlPatternMatchHandler;
+import com.axreng.backend.application.match.KeywordPatternMatchHandler;
+import com.axreng.backend.application.match.MatchManager;
 import com.axreng.backend.application.pattern.HrefHtmlPattern;
 import com.axreng.backend.application.pattern.KeywordPattern;
 import com.axreng.backend.application.search.SearchService;
@@ -35,12 +35,12 @@ public class Main {
             //#endregion
 
             //#region MatchHandler
-            KeywordPatternMatch keywordPatternMatch = new KeywordPatternMatch(dispatcher, new KeywordPattern(search.keyword()));
-            HrefHtmlPatternMatch hrefHtmlPatternMatch = new HrefHtmlPatternMatch(dispatcher, new HrefHtmlPattern());
-            MatchHandler matchHandler = new MatchHandler(search, keywordPatternMatch, hrefHtmlPatternMatch);
+            KeywordPatternMatchHandler keywordPatternMatch = new KeywordPatternMatchHandler(dispatcher, new KeywordPattern(search.keyword()));
+            HrefHtmlPatternMatchHandler hrefHtmlPatternMatch = new HrefHtmlPatternMatchHandler(dispatcher, new HrefHtmlPattern());
+            MatchManager matchManager = new MatchManager(search, keywordPatternMatch, hrefHtmlPatternMatch);
             //#endregion
 
-            SearchService service = new SearchService(matchHandler);
+            SearchService service = new SearchService(matchManager);
             service.execute(search);
             System.out.println("Results: " + search.results());
         }catch(Exception e){

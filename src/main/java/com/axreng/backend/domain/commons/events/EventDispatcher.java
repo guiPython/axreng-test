@@ -17,7 +17,7 @@ public class EventDispatcher implements IEventDispatcher {
     public void notify(IEvent event) {
         final String eventName = event.getClass().getName();
         final List<IEventHandler<IEvent>> handlersOfEvent = this.handlers.get(eventName);
-        if (handlers != null) {
+        if (handlersOfEvent != null) {
             handlersOfEvent.forEach(h -> h.handle(event));
         }
     }
