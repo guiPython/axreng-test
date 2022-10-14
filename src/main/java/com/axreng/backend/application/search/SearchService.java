@@ -8,7 +8,7 @@ import com.axreng.backend.domain.search.entity.ISearch;
 
 public class SearchService {
     private final MatchManager matchManager;
-    private final int LIMIT_OF_THREADS = 10;
+    private final int LIMIT_OF_THREADS = 8;
 
     public SearchService(MatchManager matchManager) {
         this.matchManager = matchManager;
