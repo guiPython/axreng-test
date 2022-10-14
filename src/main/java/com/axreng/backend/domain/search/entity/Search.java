@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -20,6 +21,8 @@ public class Search implements ISearch {
     private AtomicBoolean completed;
     private Set<IQuery> queries;
     private ConcurrentLinkedQueue<IQuery> queue;
+    private long updatedAt;
+    private final long SEARCH_TIMEOUT = TimeUnit.SECONDS.toMillis(2);
 
     private void validate() throws Exception {
         if (this.keyword == null || this.keyword.length() > 32 || this.keyword.length() < 4 || this.keyword.isBlank()) {
@@ -44,6 +47,7 @@ public class Search implements ISearch {
         this.queue.add(baseQuery);
         this.limitOfResults = limitOfResults;
         this.validate();
+        this.updatedAt = System.currentTimeMillis();
     }
 
     public Search(String url, String keyword, String limitOfResults) throws Exception {
@@ -64,6 +68,7 @@ public class Search implements ISearch {
             this.limitOfResults = -1;
         }
         this.validate();
+        this.updatedAt = System.currentTimeMillis();
     }
 
     @Override
@@ -99,6 +104,9 @@ public class Search implements ISearch {
             if (!query.isCompleted())
                 return false;
         }
+        if (this.updatedAt + this.SEARCH_TIMEOUT < System.currentTimeMillis()) {
+            this.completed.set(true);
+        }
         this.completed.set(true);
         return true;
     }
@@ -122,11 +130,14 @@ public class Search implements ISearch {
         if (this.isLimited()) {
             if (this.results.get() < this.limitOfResults) {
                 this.results.incrementAndGet();
+                this.updatedAt = System.currentTimeMillis();
                 return;
             }
+            this.updatedAt = System.currentTimeMillis();
             this.completed.set(true);
             return;
         }
+        this.updatedAt = System.currentTimeMillis();
         this.results.incrementAndGet();
     }
 }
