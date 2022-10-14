@@ -17,15 +17,17 @@ public class HrefHtmlPatternTest {
     @Test
     public void match(){
         var hrefHtmlPattern = new HrefHtmlPattern();
-        assertTrue(hrefHtmlPattern.match("http://www.test.com.br"));
-        assertTrue(hrefHtmlPattern.match("https://test.com.br"));
-        assertTrue(hrefHtmlPattern.match(" http://ssdwdd.com.br"));
-        assertTrue(hrefHtmlPattern.match(" http://www.ssdwdd.com.br"));
-        assertTrue(hrefHtmlPattern.match("https://hdbwuhdb.com.br "));
-        assertTrue(hrefHtmlPattern.match("https://hdbwuhdb.com.br/test.html"));
-        assertTrue(hrefHtmlPattern.match(" http://testtest.com.br "));
-        assertTrue(hrefHtmlPattern.match("<a href=http://testtest.com.br>qbyuydsw<a>"));
-        assertTrue(hrefHtmlPattern.match("<a href=\"http://testtest.com.br\">qbyuydsw<a>"));
+        assertFalse(hrefHtmlPattern.match("http://www.test.com.br"));
+        assertFalse(hrefHtmlPattern.match("https://test.com.br"));
+        assertFalse(hrefHtmlPattern.match(" http://ssdwdd.com.br"));
+        assertFalse(hrefHtmlPattern.match(" http://www.ssdwdd.com.br"));
+        assertFalse(hrefHtmlPattern.match("https://hdbwuhdb.com.br "));
+        assertFalse(hrefHtmlPattern.match("https://hdbwuhdb.com.br/test.html"));
+        assertFalse(hrefHtmlPattern.match(" http://testtest.com.br "));
+        assertFalse(hrefHtmlPattern.match("<a href=http://testtest.com.br>qbyuydsw<a>"));
+        assertFalse(hrefHtmlPattern.match("<a href=\"http://testtest.com.br\">qbyuydsw<a>"));
+        assertFalse(hrefHtmlPattern.match("<a href=http://testtest.com.br\\index.html>qbyuydsw<a>"));
+        assertTrue(hrefHtmlPattern.match("<a href=\"http://testtest.com.br\\test.html\">qbyuydsw<a>"));
         assertFalse(hrefHtmlPattern.match("http://ssdwdd"));
         assertFalse(hrefHtmlPattern.match("http//www.ssdwdd.com"));
         assertFalse(hrefHtmlPattern.match("http:/www.ssdwdd"));
