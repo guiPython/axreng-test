@@ -35,7 +35,7 @@ public class UrlFoundHandlerTest {
     }
 
     @Test
-    public void handle() throws Exception{
+    public void handleWithIncompletedSearch() throws Exception{
         var url = mock(Url.class);
         var search = spy(new Search(url, "keyword", 1));
         when(search.url()).thenReturn(new Url("http://minhaurl2.com"));
@@ -47,6 +47,21 @@ public class UrlFoundHandlerTest {
         var event = new UrlFoundHandler();
         event.handle(urlFound);
         verify(search, times(1)).addQuery(any());
+    }
+
+    @Test
+    public void handleWithCompletedSearch() throws Exception{
+        var url = mock(Url.class);
+        var search = spy(new Search(url, "keyword", 1));
+        when(search.isCompleted()).thenReturn(true);
+        
+        var query = mock(IQuery.class);
+        when(query.url()).thenReturn(new Url("http://minhaurl2.com"));
+
+        var urlFound = new UrlFound(search, query.url().toString());
+        var event = new UrlFoundHandler();
+        event.handle(urlFound);
+        verify(search, times(0)).addQuery(any());
     }
 
 }

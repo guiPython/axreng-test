@@ -18,7 +18,7 @@ public class Search implements ISearch {
     private AtomicInteger results;
     private Integer limitOfResults;
     private AtomicBoolean completed;
-    private Set<String> queries;
+    private Set<IQuery> queries;
     private ConcurrentLinkedQueue<IQuery> queue;
 
     private void validate() throws Exception {
@@ -37,10 +37,11 @@ public class Search implements ISearch {
         this.keyword = keyword;
         this.results = new AtomicInteger(0);
         this.completed = new AtomicBoolean(false);
+        var baseQuery = new Query(this.url);
         this.queries = Collections.synchronizedSet(new HashSet<>());
-        this.queries.add(this.url.toString());
+        this.queries.add(baseQuery);
         this.queue = new ConcurrentLinkedQueue<>();
-        this.queue.add(new Query(this.url));
+        this.queue.add(baseQuery);
         this.limitOfResults = limitOfResults;
         this.validate();
     }
@@ -51,10 +52,11 @@ public class Search implements ISearch {
             this.keyword = keyword;
             this.results = new AtomicInteger(0);
             this.completed = new AtomicBoolean(false);
+            var baseQuery = new Query(this.url);
             this.queries = Collections.synchronizedSet(new HashSet<>());
-            this.queries.add(this.url.toString());
+            this.queries.add(baseQuery);
             this.queue = new ConcurrentLinkedQueue<>();
-            this.queue.add(new Query(this.url));
+            this.queue.add(baseQuery);
             this.limitOfResults = Integer.valueOf(limitOfResults);
         } catch (MalformedURLException e) {
             throw new Exception("Cannot create a search with invalid url");
@@ -93,11 +95,12 @@ public class Search implements ISearch {
     public synchronized boolean isCompleted() {
         if (this.completed.get())
             return true;
-        for (var query : this.queries()) {
+        for (var query : this.queries) {
             if (!query.isCompleted())
                 return false;
         }
-        return this.completed.get();
+        this.completed.set(true);
+        return true;
     }
 
     @Override
@@ -108,7 +111,7 @@ public class Search implements ISearch {
     @Override
     public synchronized void addQuery(IQuery query) {
         if (query.url().containsPathOfUrl(this.url()) && !this.completed.get()) {
-            if(this.queries.add(query.url().toString())){
+            if (this.queries.add(query)) {
                 this.queue.add(query);
             }
         }

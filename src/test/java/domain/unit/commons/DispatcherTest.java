@@ -1,10 +1,9 @@
 package domain.unit.commons;
 
+import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
-import org.junit.jupiter.api.*;
 
 import com.axreng.backend.domain.commons.events.EventDispatcher;
 import com.axreng.backend.domain.commons.events.IEvent;
@@ -15,27 +14,50 @@ public class DispatcherTest {
     class AnyEvent implements IEvent{}
     
     @Test
-    void Notify(){
-        var handler = spy(new IEventHandler<AnyEvent>() {
+    public void notifySubscribedHandlers(){
+        IEventHandler<AnyEvent> handler = (new IEventHandler<AnyEvent>() {
             @Override
             public void handle(AnyEvent data) {}   
         });
+        var spyHandler = spy(handler);
 
         var dispatcher = new EventDispatcher();
-        dispatcher.subscribe(AnyEvent.class, handler);
+        dispatcher.subscribe(AnyEvent.class, spyHandler);
         var event = new AnyEvent();
         dispatcher.notify(event);
 
-        verify(handler, times(1)).handle(event);       
+        verify(spyHandler, times(1)).handle(event);       
     }
 
     @Test 
-    void Subscribe(){
+    public void subscribeHandler(){
+        IEventHandler<AnyEvent> handler = (new IEventHandler<AnyEvent>() {
+            @Override
+            public void handle(AnyEvent data) {}   
+        });
+        var spyHandler = spy(handler);
 
+        var dispatcher = spy(new EventDispatcher());
+        dispatcher.subscribe(AnyEvent.class, spyHandler);
+        var event = new AnyEvent();
+        dispatcher.notify(event);
+        verify(spyHandler, times(1)).handle(event);
     }
 
     @Test
-    void Unsubscribe(){
+    public void unsubscribeHandler(){
+        IEventHandler<AnyEvent> handler = (new IEventHandler<AnyEvent>() {
+            @Override
+            public void handle(AnyEvent data) {}   
+        });
+        var spyHandler = spy(handler);
 
+        var dispatcher = new EventDispatcher();
+        dispatcher.subscribe(AnyEvent.class, spyHandler);   
+        dispatcher.unsubscribe(AnyEvent.class, spyHandler);
+        var event = new AnyEvent();
+        dispatcher.notify(event);
+
+        verify(spyHandler, times(0)).handle(event);
     }
 }

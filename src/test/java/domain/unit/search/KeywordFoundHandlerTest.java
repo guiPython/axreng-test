@@ -32,13 +32,25 @@ public class KeywordFoundHandlerTest {
     }
 
     @Test
-    public void handle() throws MalformedURLException{
+    public void handleWithIncompletedSearch() throws MalformedURLException{
         var search = mock(ISearch.class);
         var query = mock(IQuery.class);
+        when(query.isCompleted()).thenReturn(false);
         when(query.url()).thenReturn(new Url("http://minhaurl.com"));
 
         var eventHandler = new KeywordFoundHandler(); 
         eventHandler.handle(new KeywordFound(search, query));
         assertEquals("Result found: " + query.url(), outputStream.toString().trim());
+    }
+
+    @Test
+    public void handleWithCompletedSearch() throws MalformedURLException{
+        var search = mock(ISearch.class);
+        var query = mock(IQuery.class);
+        when(search.isCompleted()).thenReturn(true);
+
+        var eventHandler = new KeywordFoundHandler(); 
+        eventHandler.handle(new KeywordFound(search, query));
+        assertEquals("", outputStream.toString().trim());
     }
 }

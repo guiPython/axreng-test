@@ -1,6 +1,6 @@
 package application.unit.search;
 
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.mock;
@@ -22,7 +22,7 @@ public class SearchServiceTest {
                 new KeywordPatternMatch(null, null)));
         var searchService = new SearchService(matchHandler);
 
-        when(search.queries()).thenReturn(new ArrayList<>());
+        when(search.queries()).thenReturn(new ConcurrentLinkedQueue<>());
         when(search.isCompleted()).thenReturn(true);
         searchService.execute(search);
     }
@@ -34,7 +34,7 @@ public class SearchServiceTest {
                 new KeywordPatternMatch(null, null)));
         var searchService = new SearchService(matchHandler);
 
-        var queries = new ArrayList<IQuery>();
+        var queries = new ConcurrentLinkedQueue<IQuery>();
         queries.add(mock(IQuery.class));
         when(search.queries()).thenReturn(queries);
         when(search.isCompleted()).thenReturn(true);

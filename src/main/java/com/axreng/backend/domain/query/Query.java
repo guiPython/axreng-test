@@ -27,5 +27,18 @@ public class Query implements IQuery{
     public synchronized  void complete() {
         this.completed.set(true);
     }
-    
+
+    @Override    
+    public int hashCode() {
+        return this.url.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass() == Query.class){
+            Query otherQuery = (Query) obj;
+            return  otherQuery.url().equals(this.url);
+        }
+        return false;
+    }
 }

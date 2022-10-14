@@ -18,18 +18,12 @@ import com.axreng.backend.domain.search.events.UrlFoundHandler;
 
 public class Main {
     public static void main(String[] args) {
-        /*get("/crawl/:id", (req, res) ->
-                "GET /crawl/" + req.params("id"));
-        post("/crawl", (req, res) ->
-                "POST /crawl" + System.lineSeparator() + req.body());*/
-
         try{
             //#region Create a search 
             final String url = System.getenv("BASE_URL");
             final String keyword = System.getenv("KEYWORD");
             final String limitOfResults = System.getenv("MAX_RESULTS");
-            //Search search = new Search(url, keyword, limitOfResults);
-            Search search = new Search("http://hiring.axreng.com/", "four", "8");
+            Search search = new Search(url, keyword, limitOfResults);
             //#endregion
 
             //#region Dispatcher
@@ -48,6 +42,7 @@ public class Main {
 
             SearchService service = new SearchService(matchHandler);
             service.execute(search);
+            System.out.println("Results: " + search.results());
         }catch(Exception e){
             System.exit(0);
         }  
